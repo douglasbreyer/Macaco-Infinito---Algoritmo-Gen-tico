@@ -11,41 +11,41 @@ from pyevolve import Initializators, Mutators, Crossovers
 import math
 
 sentence = raw_input("Entre com a frase a ser encontrada pelos macacos: ")
-numeric_sentence = map(ord, sentence)
+numeric_sentence = map(ord, sentence)    #aplica o ord(converte o caractere para o numero correspondente na tabela ASCI) em cada caractere da lista/string
 
-def evolve_callback(ga_engine):
-   generation = ga_engine.getCurrentGeneration()
-   if generation%50==0:
-      indiv = ga_engine.bestIndividual()
-      print ''.join(map(chr,indiv))
+def evolve_callback(ga_engine):                           #funcao local ga_engine eh uma instancia do modulo GSimpleGA / mecanismo do algoritmo genetico  http://pyevolve.sourceforge.net/getstarted.html?highlight=ga_engine
+   generation = ga_engine.getCurrentGeneration()              #obter a geracao atual 
+   if generation%50==0:        #????
+      indiv = ga_engine.bestIndividual()          #retorna a melhor populacao individual
+      print ''.join(map(chr,indiv))                 #devolce o caractere correspondente ao codigo numerico passado
    return False
 
 def run_main():
-   genome = G1DList.G1DList(len(sentence))
-   genome.setParams(rangemin=min(numeric_sentence),
+   genome = G1DList.G1DList(len(sentence))          #instanciando uma classe do tipo G1DList (representacao do cromossomo 1D List)
+   genome.setParams(rangemin=min(numeric_sentence),         #definindo parametros iniciais. 
                     rangemax=max(numeric_sentence),
                     bestrawscore=0.00,
-                    gauss_mu=1, gauss_sigma=4)
+                    gauss_mu=1, gauss_sigma=4)           #menor codigo numerico, mairo codigo numerico, best score, media, desvio padrao http://pyevolve.sourceforge.net/module_mutators.html?highlight=g1dlistmutatorintegergaussian#Mutators.G1DListMutatorIntegerGaussian
 
-   genome.initializator.set(Initializators.G1DListInitializatorInteger)
-   genome.mutator.set(Mutators.G1DListMutatorIntegerGaussian)
-   genome.evaluator.set(lambda genome: sum(
-                           [abs(a-b) for a, b in zip(genome, numeric_sentence)]
+   genome.initializator.set(Initializators.G1DListInitializatorInteger)      #iniciliza funcao de inteiros de G1Dlist
+   genome.mutator.set(Mutators.G1DListMutatorIntegerGaussian)               #aplica metodo de gaus n sei pq ou pra que
+   genome.evaluator.set(lambda genome: sum(                             #chamada para avaliar o genoma
+                           [abs(a-b) for a, b in zip(genome, numeric_sentence)]      #ENTENDER ESSA FORMULA TODA A
                         ))
 
-   ga = GSimpleGA.GSimpleGA(genome)
-   #ga.stepCallback.set(evolve_callback)
-   ga.setMinimax(Consts.minimaxType["minimize"])
-   ga.terminationCriteria.set(GSimpleGA.RawScoreCriteria)
-   ga.setPopulationSize(60)
-   ga.setMutationRate(0.02)
-   ga.setCrossoverRate(0.9)
-   ga.setGenerations(5000)
-   ga.evolve(freq_stats=100)
+   ga = GSimpleGA.GSimpleGA(genome)                               #manda o genoma pro algoritmo genetico 
+   # ga.stepCallback.set(evolve_callback)
+   ga.setMinimax(Consts.minimaxType["minimize"])              #seta para minimizar
+   ga.terminationCriteria.set(GSimpleGA.RawScoreCriteria)     # criterio de parada usando o best score bruto
+   ga.setPopulationSize(60)             #tamanho da populacao
+   ga.setMutationRate(0.02)           #taxa de mutacao entre 0 e 1
+   ga.setCrossoverRate(0.9)           #taxa de cruzamento entre 0 e 1
+   ga.setGenerations(5000)            #numero maximo de geracoes de evolucao
+   ga.evolve(freq_stats=100)          #faz geracoes ate o criterio de termino e exibe as informacoes. 
 
-   best = ga.bestIndividual()
-   print "Best individual score: %.2f" % (best.score,)
-   print ''.join(map(chr, best))
+   best = ga.bestIndividual()           #retorna o melhor individuo da populacao
+   print "Best individual score: %.2f" % (best.score,)    #printa score do melhor
+   print ''.join(map(chr, best))       #retorna os caracteres correspondentes ao codigo numerico passado
 
-if __name__ == "__main__":
+if __name__ == "__main__":             
    run_main()
