@@ -1,7 +1,6 @@
 #===============================================================================
 # Pyevolve version of the Infinite Monkey Theorem
 # See: http://en.wikipedia.org/wiki/Infinite_monkey_theorem
-# By Jelle Feringa
 #===============================================================================
 
 from pyevolve import G1DList
@@ -15,8 +14,8 @@ numeric_sentence = map(ord, sentence)    #aplica o ord(converte o caractere para
 
 def evolve_callback(ga_engine):                           #funcao local ga_engine eh uma instancia do modulo GSimpleGA / mecanismo do algoritmo genetico  http://pyevolve.sourceforge.net/getstarted.html?highlight=ga_engine
    generation = ga_engine.getCurrentGeneration()              #obter a geracao atual 
-   if generation%50==0:        #????
-      indiv = ga_engine.bestIndividual()          #retorna a melhor populacao individual
+   if generation%50==0:        #intervalo mostrar os dados
+      indiv = ga_engine.bestIndividual()          #retorna a melhor individuo
       print ''.join(map(chr,indiv))                 #devolce o caractere correspondente ao codigo numerico passado
    return False
 
@@ -28,9 +27,9 @@ def run_main():
                     gauss_mu=1, gauss_sigma=4)           #menor codigo numerico, mairo codigo numerico, best score, media, desvio padrao http://pyevolve.sourceforge.net/module_mutators.html?highlight=g1dlistmutatorintegergaussian#Mutators.G1DListMutatorIntegerGaussian
 
    genome.initializator.set(Initializators.G1DListInitializatorInteger)      #iniciliza funcao de inteiros de G1Dlist
-   genome.mutator.set(Mutators.G1DListMutatorIntegerGaussian)               #aplica metodo de gaus n sei pq ou pra que
+   genome.mutator.set(Mutators.G1DListMutatorIntegerGaussian)               #aplica a mutacao gaussiana onde a media eh 0 e o desvio padrao eh 
    genome.evaluator.set(lambda genome: sum(                             #chamada para avaliar o genoma
-                           [abs(a-b) for a, b in zip(genome, numeric_sentence)]      #ENTENDER ESSA FORMULA TODA A
+                           [abs(a-b) for a, b in zip(genome, numeric_sentence)]      #FITNESS
                         ))
 
    ga = GSimpleGA.GSimpleGA(genome)                               #manda o genoma pro algoritmo genetico 
